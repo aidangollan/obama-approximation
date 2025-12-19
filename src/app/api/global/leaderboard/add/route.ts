@@ -9,12 +9,10 @@ export async function POST(request: NextRequest) {
     
     if (typeof seed !== 'number' || typeof sse !== 'number' || 
         typeof mse !== 'number' || typeof similarity !== 'number') {
-      console.error('Invalid data received:', { seed, sse, mse, similarity })
-      return NextResponse.json({ error: 'Invalid data' }, { status: 400 })
+      return NextResponse.json({ error: 'Invalid data types' }, { status: 400 })
     }
 
-
-    // Store in global top 12 sorted set (sorted by SSE)
+    // Create match data
     const matchData = JSON.stringify({
       seed,
       mse,
@@ -23,6 +21,7 @@ export async function POST(request: NextRequest) {
       ...(username && { username })
     })
     
+    // Add to sorted set
     await kv.zadd('global:top10', {
       score: sse,
       member: matchData
@@ -31,7 +30,7 @@ export async function POST(request: NextRequest) {
     // Keep only top 12 (trim sorted set)
     await kv.zremrangebyrank('global:top10', 12, -1)
 
-    // Update user leaderboard if username provided
+    // If username provided, update user leaderboard too
     if (username) {
       const userKey = `user:${username}`
       const existingUser = await kv.get<any>(userKey)
@@ -50,7 +49,6 @@ export async function POST(request: NextRequest) {
         await kv.set(userKey, userData)
         
         // Update sorted set - use username as member to ensure uniqueness
-        // Remove old entry if exists (this will work now since we use just the username)
         await kv.zrem('global:users', username)
         
         // Add new entry with updated score
@@ -67,23 +65,19 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Check if this is better than current global best
+    // Update global best if needed
     const currentBest = await kv.get<number>('global:best_sse')
-    
-    // Update global best if this is better
     if (currentBest === null || sse < currentBest) {
       await kv.set('global:best_sse', sse)
       await kv.set('global:best_seed', seed)
       await kv.set('global:best_similarity', similarity)
       await kv.set('global:best_mse', mse)
-      
-      return NextResponse.json({ success: true, isNewBest: true })
     }
 
-    return NextResponse.json({ success: true, isNewBest: false })
+    return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Error submitting match:', error)
-    return NextResponse.json({ error: 'Failed to submit', details: String(error) }, { status: 500 })
+    console.error('Error adding entry:', error)
+    return NextResponse.json({ error: 'Failed to add entry', details: String(error) }, { status: 500 })
   }
 }
 

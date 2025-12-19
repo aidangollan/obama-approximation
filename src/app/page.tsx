@@ -78,7 +78,7 @@ function RecentThumbnail({ generation }: { generation: RecentGeneration }) {
   )
 }
 
-// Component for displaying thumbnails in Top 10 grid
+// Component for displaying thumbnails in Top 12 grid
 const Top10Thumbnail = memo(function Top10Thumbnail({ entry, rank, onClick }: { entry: Top10Entry; rank: number; onClick: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const workerRef = useRef<Worker | null>(null)
@@ -250,7 +250,7 @@ export default function Home() {
       lastServerTotal.current = stats.total_images_explored
     })
     getGlobalTop10().then((matches) => {
-      console.log('Global top 10 loaded:', matches)
+      console.log('Global top 12 loaded:', matches)
       setGlobalTop10(matches)
       setGlobalTop10Loading(false)
     })
@@ -263,7 +263,7 @@ export default function Home() {
         lastServerTotal.current = stats.total_images_explored
       })
       getGlobalTop10().then((matches) => {
-        console.log('Global top 10 updated:', matches)
+        console.log('Global top 12 updated:', matches)
         setGlobalTop10(matches)
         setGlobalTop10Loading(false)
       })
@@ -352,7 +352,7 @@ export default function Home() {
           break
 
         case 'best':
-          // Update local top 10 (include username)
+          // Update local top 12 (include username)
           setTop10((prev) => {
             const newEntry = { 
               seed: data.seed, 
@@ -361,14 +361,14 @@ export default function Home() {
               similarity: data.similarity,
               ...(twitterHandle && { username: twitterHandle })
             }
-            const newTop10 = [...prev, newEntry]
+            const newTop12 = [...prev, newEntry]
               .sort((a, b) => a.sse - b.sse)
-              .slice(0, 10)
-            saveTop10(newTop10)
-            return newTop10
+              .slice(0, 12)
+            saveTop10(newTop12)
+            return newTop12
           })
 
-          // Submit to global (server stores top 10 automatically)
+          // Submit to global (server stores top 12 automatically)
           submitIfGlobalBest(data.seed, data.sse, data.mse, data.similarity, twitterHandle || undefined)
           break
       }
@@ -584,7 +584,7 @@ export default function Home() {
         <div className={styles.leaderboardSection}>
           <div className={styles.sectionHeader}>
             <h2>Your Discoveries</h2>
-            <span className={styles.sectionLabel}>LOCAL TOP 10</span>
+            <span className={styles.sectionLabel}>LOCAL TOP 12</span>
           </div>
           {top10.length === 0 ? (
             <div className={styles.emptyState}>No discoveries yet</div>
@@ -602,10 +602,10 @@ export default function Home() {
           )}
         </div>
 
-        {/* Global Top 10 */}
+        {/* Global Top 12 */}
         <div className={styles.leaderboardSection}>
           <div className={styles.sectionHeader}>
-            <h2>Global Top 10</h2>
+            <h2>Global Top 12</h2>
             <span className={styles.sectionLabel}>WORLDWIDE</span>
           </div>
           {globalTop10Loading ? (
@@ -804,7 +804,7 @@ export default function Home() {
   )
 }
 
-// Component for global top 10 thumbnail
+// Component for global top 12 thumbnail
 const GlobalThumbnail = memo(function GlobalThumbnail({ match, rank }: { match: GlobalMatch; rank: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const workerRef = useRef<Worker | null>(null)

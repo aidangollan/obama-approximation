@@ -475,7 +475,7 @@
 /* ===== DISCOVERY GRID ===== */
 .discoveryGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 15px;
   flex: 1;
 }
@@ -733,7 +733,7 @@
   }
 
   .discoveryGrid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
   }
 }
 
@@ -767,7 +767,7 @@
 
 @media (max-width: 1024px) {
   .discoveryGrid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 
   .headerRow {
@@ -781,7 +781,7 @@
 
 @media (max-width: 768px) {
   .discoveryGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 15px;
   }
 
@@ -823,7 +823,7 @@
 
 @media (max-width: 480px) {
   .discoveryGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .startButton,

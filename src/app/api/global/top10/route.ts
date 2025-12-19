@@ -13,14 +13,14 @@ export interface GlobalMatch {
 
 export async function GET() {
   try {
-    // Get top 10 from sorted set (sorted by SSE)
-    const top10 = await kv.zrange('global:top10', 0, 9, { withScores: true })
+    // Get top 12 from sorted set (sorted by SSE)
+    const top12 = await kv.zrange('global:top10', 0, 11, { withScores: true })
     
     // Parse results - data is already objects, not strings!
     const matches: GlobalMatch[] = []
-    for (let i = 0; i < top10.length; i += 2) {
-      const data = top10[i]
-      const sse = top10[i + 1] as number
+    for (let i = 0; i < top12.length; i += 2) {
+      const data = top12[i]
+      const sse = top12[i + 1] as number
       
       // Check if data is already an object
       if (typeof data === 'object' && data !== null) {
@@ -38,7 +38,7 @@ export async function GET() {
     
     return NextResponse.json({ matches })
   } catch (error) {
-    console.error('Error fetching top 10:', error)
+    console.error('Error fetching top 12:', error)
     return NextResponse.json({ matches: [], error: String(error) }, { status: 200 })
   }
 }
