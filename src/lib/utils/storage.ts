@@ -1,4 +1,4 @@
-const TOP_10_KEY = 'obama-approximation-top10' // Actually stores top 12 now
+const TOP_10_KEY = 'obama-approximation-top10'
 const TOTAL_COUNT_KEY = 'obama-approximation-total-count'
 
 export interface Top10Entry {
@@ -10,7 +10,7 @@ export interface Top10Entry {
 }
 
 /**
- * Load top 12 entries from localStorage
+ * Load top 10 entries from localStorage
  */
 export function loadTop10(): Top10Entry[] {
   if (typeof window === 'undefined') return []
@@ -21,26 +21,26 @@ export function loadTop10(): Top10Entry[] {
     
     const parsed = JSON.parse(stored)
     if (Array.isArray(parsed)) {
-      return parsed.slice(0, 12)
+      return parsed.slice(0, 10)
     }
     return []
   } catch (error) {
-    console.error('Failed to load top 12:', error)
+    console.error('Failed to load top 10:', error)
     return []
   }
 }
 
 /**
- * Save top 12 entries to localStorage
+ * Save top 10 entries to localStorage
  */
 export function saveTop10(entries: Top10Entry[]): void {
   if (typeof window === 'undefined') return
   
   try {
-    const toSave = entries.slice(0, 12)
+    const toSave = entries.slice(0, 10)
     localStorage.setItem(TOP_10_KEY, JSON.stringify(toSave))
   } catch (error) {
-    console.error('Failed to save top 12:', error)
+    console.error('Failed to save top 10:', error)
   }
 }
 

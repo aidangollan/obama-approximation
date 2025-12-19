@@ -16,26 +16,27 @@ export async function GET() {
     const count = await kv.zcard('global:users')
     console.log('📊 KV users count:', count)
     
-    // Get top 10 usernames from sorted set (sorted by best similarity, descending)
-    const usernames = await kv.zrange('global:users', 0, 9, { 
+    // Get top 10 users from sorted set (sorted by best similarity, descending)
+    const users = await kv.zrange('global:users', 0, 9, { 
       withScores: false,
       rev: true // Reverse to get highest scores first
     })
     
-    console.log('📊 Raw usernames from KV:', usernames)
+    console.log('📊 Raw users from KV:', users)
+    console.log('📊 Type of first item:', users[0] ? typeof users[0] : 'undefined')
     
     const topUsers: TopUser[] = []
-    
-    // Fetch full user data for each username
-    for (const username of usernames) {
-      if (typeof username === 'string') {
-        const userKey = `user:${username}`
-        const userData = await kv.get<TopUser>(userKey)
-        
-        if (userData) {
-          topUsers.push(userData)
-        } else {
-          console.warn('User data not found for username:', username)
+    for (const item of users) {
+      if (typeof item === 'object' && item !== null) {
+        // Data is already an object
+        topUsers.push(item as TopUser)
+      } else if (typeof item === 'string') {
+        // Data is a JSON string
+        try {
+          const parsed = JSON.parse(item)
+          topUsers.push(parsed)
+        } catch (e) {
+          console.error('Failed to parse user:', e, 'Data:', item)
         }
       }
     }

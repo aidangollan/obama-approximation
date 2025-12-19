@@ -15,19 +15,19 @@ export interface GlobalStats {
   best_mse: number | null
 }
 
-// Get global top 12
+// Get global top 10
 export async function getGlobalTop10(): Promise<GlobalMatch[]> {
   try {
     const response = await fetch('/api/global/top10', { cache: 'no-store' })
     const data = await response.json()
     return data.matches || []
   } catch (error) {
-    console.error('Error fetching top 12:', error)
+    console.error('Error fetching top 10:', error)
     return []
   }
 }
 
-// Submit match to global database (stored in top 12 if good enough)
+// Submit match to global database (stored in top 10 if good enough)
 export async function submitIfGlobalBest(seed: number, sse: number, mse: number, similarity: number, username?: string) {
   try {
     console.log('Submitting to global:', { seed, sse, similarity, username })

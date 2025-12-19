@@ -475,9 +475,33 @@
 /* ===== DISCOVERY GRID ===== */
 .discoveryGrid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 15px;
   flex: 1;
+}
+
+@supports (width: 100%) {
+  .discoveryGrid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+}
+
+@media (min-width: 1400px) {
+  .discoveryGrid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+@media (max-width: 1399px) and (min-width: 1000px) {
+  .discoveryGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 999px) {
+  .discoveryGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 
@@ -733,7 +757,7 @@
   }
 
   .discoveryGrid {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
@@ -767,7 +791,7 @@
 
 @media (max-width: 1024px) {
   .discoveryGrid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .headerRow {
@@ -781,7 +805,7 @@
 
 @media (max-width: 768px) {
   .discoveryGrid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 15px;
   }
 
@@ -823,7 +847,7 @@
 
 @media (max-width: 480px) {
   .discoveryGrid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .startButton,

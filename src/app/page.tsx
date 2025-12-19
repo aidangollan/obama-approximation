@@ -78,7 +78,7 @@ function RecentThumbnail({ generation }: { generation: RecentGeneration }) {
   )
 }
 
-// Component for displaying thumbnails in Top 12 grid
+// Component for displaying thumbnails in Top 10 grid
 const Top10Thumbnail = memo(function Top10Thumbnail({ entry, rank, onClick }: { entry: Top10Entry; rank: number; onClick: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const workerRef = useRef<Worker | null>(null)
@@ -250,7 +250,7 @@ export default function Home() {
       lastServerTotal.current = stats.total_images_explored
     })
     getGlobalTop10().then((matches) => {
-      console.log('Global top 12 loaded:', matches)
+      console.log('Global top 10 loaded:', matches)
       setGlobalTop10(matches)
       setGlobalTop10Loading(false)
     })
@@ -263,7 +263,7 @@ export default function Home() {
         lastServerTotal.current = stats.total_images_explored
       })
       getGlobalTop10().then((matches) => {
-        console.log('Global top 12 updated:', matches)
+        console.log('Global top 10 updated:', matches)
         setGlobalTop10(matches)
         setGlobalTop10Loading(false)
       })
@@ -368,7 +368,7 @@ export default function Home() {
             return newTop12
           })
 
-          // Submit to global (server stores top 12 automatically)
+          // Submit to global (server stores top 10 automatically)
           submitIfGlobalBest(data.seed, data.sse, data.mse, data.similarity, twitterHandle || undefined)
           break
       }
@@ -602,10 +602,10 @@ export default function Home() {
           )}
         </div>
 
-        {/* Global Top 12 */}
+        {/* Global Top 10 */}
         <div className={styles.leaderboardSection}>
           <div className={styles.sectionHeader}>
-            <h2>Global Top 12</h2>
+            <h2>Global Top 10</h2>
             <span className={styles.sectionLabel}>WORLDWIDE</span>
           </div>
           {globalTop10Loading ? (
@@ -804,7 +804,7 @@ export default function Home() {
   )
 }
 
-// Component for global top 12 thumbnail
+// Component for global top 10 thumbnail
 const GlobalThumbnail = memo(function GlobalThumbnail({ match, rank }: { match: GlobalMatch; rank: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const workerRef = useRef<Worker | null>(null)

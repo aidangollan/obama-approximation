@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
 
-    // Store in global top 12 sorted set (sorted by SSE)
+    // Store in global top 10 sorted set (sorted by SSE)
     const matchData = JSON.stringify({
       seed,
       mse,
@@ -46,17 +46,25 @@ export async function POST(request: NextRequest) {
           lastUpdated: Date.now()
         }
         
-        // Store user data in a separate key
+        // Store user data
         await kv.set(userKey, userData)
         
-        // Update sorted set - use username as member to ensure uniqueness
-        // Remove old entry if exists (this will work now since we use just the username)
-        await kv.zrem('global:users', username)
+        // Remove old entry from sorted set if exists
+        if (existingUser) {
+          const oldEntry = JSON.stringify({
+            username: existingUser.username,
+            bestSimilarity: existingUser.bestSimilarity,
+            bestSeed: existingUser.bestSeed,
+            matchCount: existingUser.matchCount,
+            lastUpdated: existingUser.lastUpdated
+          })
+          await kv.zrem('global:users', oldEntry)
+        }
         
-        // Add new entry with updated score
+        // Add new entry to sorted set
         await kv.zadd('global:users', {
           score: similarity,
-          member: username
+          member: JSON.stringify(userData)
         })
         
         // Keep only top 10 users
